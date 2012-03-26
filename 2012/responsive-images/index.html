@@ -75,15 +75,17 @@ the same problem: The ideal bitmap image size can only be determined by the
 browser at runtime.</h1>
 
 <h2>Different solutions (workarounds?) have been proposed and they all fall into
-three categories:</h2>
+four categories:</h2>
 
 <ul>
 <li>CSS background-image hacks</li>
 
 <li>JavaScript image replacement hacks</li>
 
-<li>New HTML tags that specify multiple image sources similar to the
+<li>New HTML tags that specify multiple image sources in a manner similar to the
 &lt;video&gt; and &lt;audio&gt; tags.</li>
+
+<li>Server-side useragent sniffing.</li>
 </ul>
 
 <p>Let's go through them.</p>
@@ -139,8 +141,14 @@ multiple images at predetermined sizes.</li>
 multiple images at predetermined sizes.</li>
 </ul>
 
+<h3>Server-side user agent sniffing sucks, because:</h3>
 
-<h2>I propose a fourth option</h2>
+<ul>
+<li>User agent sniffing sucks.</li>
+</ul>
+
+
+<h2>I propose a fifth option</h2>
 
 <p><strong>Use a progressive image format and HTTP range requests.</strong>
 Ideally the image metadata at the start of the file would include some hints
