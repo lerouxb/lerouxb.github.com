@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+<head>
+<title>The responsive images problem</title>
+<style>
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}
+table{border-collapse:collapse;border-spacing:0;}
+fieldset,img{border:0;}
+address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}
+ol,ul {list-style:none;}
+caption,th {text-align:left;}
+h1,h2,h3,h4,h5,h6{font-size:100%;}
+q:before,q:after{content:'';}
+a, a:link, a:visited, a:active, a:hover {outline: none;}
+
+html {
+background-color: #fff;
+color: #222;
+line-height: 1.5;
+padding: 2em;
+}
+h1, h2, h3, p, ul, hr {
+font-weight: normal;
+max-width: 640px;
+margin-bottom: 1em;
+margin-left: 0;
+}
+
+hr {
+height: 0;
+border: none;
+border-top: 1px solid #ccc;
+}
+
+h1 {
+font-size: 2em;
+line-height: 1.2;
+}
+
+h2 {
+font-size: 1.5em;
+line-height: 1.2;
+}
+
+h3 {
+font-size: 1.2em;
+}
+
+ul {
+list-style-type: square;
+}
+
+em {
+font-style: italic;
+}
+strong {
+font-weight: bold;
+}
+
+a {
+text-decoration: none;
+color: blue;
+}
+a:hover {
+color: orange;
+}
+
+</style>
+</head>
+<body>
+
+<h1>Retina displays, future HiDPI modes, fluid and responsive layouts all share
+the same problem: The ideal bitmap image size can only be determined by the
+browser at runtime.</h1>
+
+<h2>Different solutions (workarounds?) have been proposed and they all fell into
+three categories:</h2>
+
+<ul>
+<li>CSS background-image hacks</li>
+
+<li>JavaScript image replacement hacks</li>
+
+<li>New HTML tags that specify multiple image sources similar to the
+&lt;video&gt; and &lt;audio&gt; tags.</li>
+</ul>
+
+<p>Let's go through them.</p>
+
+<h3>CSS background-image hacks suck, because:</h3>
+
+<ul>
+<li>Images are typically content, not design. CSS is for design.</li>
+
+<li>It would be fairly tricky to get content management systems to consistently
+spit out the right HTML and CSS.</li>
+
+<li>There is no reliable, cross-platform way of stopping the browser from
+downloading every image it sees mentioned in CSS.</li>
+
+<li>This would likely require extra work from content authors.</li>
+
+<li>You (or your content management system) would have to create and store
+multiple images at predetermined sizes.</li>
+</ul>
+
+<h3>JavaScript image replacement hacks suck, because:</h3>
+
+<ul>
+<li>Images are typically content, sometimes design, but almost never code.</li>
+
+<li>Requiring JavaScript just to display some content <strong>in all future
+websites</strong> is ridiculous especially considering that we already have
+things like media queries and image scaling built into browsers so that we
+don't have to resort to that sort of thing.  </li>
+
+<li>There is no reliable, cross-platform way of stopping the browser from
+downloading every image it sees mentioned in HTML before your JavaScript kicks
+in to replace it all.</li>
+
+<li>This would likely require extra work from content authors.</li>
+
+<li>You (or your content management system) would have to create and store
+multiple images at predetermined sizes.</li>
+</ul>
+
+
+<h3>New HTML tags suck, because:</h3>
+
+<ul>
+<li>It would be a radical departure from what we're doing now.</li>
+
+<li>We would likely end up with two sets of image tags.</li>
+
+<li>This would likely require extra work from content authors.</li>
+
+<li>You (or your content management system) would have to create and store
+multiple images at predetermined sizes.</li>
+</ul>
+
+
+<h2>I propose a fourth option</h2>
+
+<p><strong>Use a progressive image format and HTTP range requests.</strong>
+Ideally the image metadata at the start of the file would include some hints
+about how many bytes to download to get an exact image size. The browser can
+then download the smallest size equal to or greater than the dimensions it
+needs based on the layout's width as specified in CSS. If the user zooms or
+resizes the window, the browser can request more bytes as needed.</p>
+
+<p><strong>One image, one file, one URL, one resource.</strong> Perhaps the
+image format could even be backwards compatible so that older desktop browsers
+just download the large image and deal with it as usual.</p>
+
+<p>If it <em>couldn't</em> be made to be backwards compatible, then in the
+interim we could just check for an HTTP Accept header and send either the new
+format or the full size image in an old format. But then we're back to creating
+two images again although at least they would be exactly the same size, so
+automating it would likely be easier than deciding on a set of dimensions to
+support ahead of time.</p>
+
+<p>I assume that a new web image format or at least changes to existing
+progressive image formats would be required, because ideally you would want to
+give the browsers some hints about what dimensions the image was optimised for
+and how many bytes into the image those dimensions start and end. These would
+probably align with some multiples of two. I'm not sure.</p>
+
+<p>You upload the largest possible size image and in your layout's CSS you limit the width either with something like max-width: 100%; or in your media queries you can specify pixel value widths for all images inside a specific column, or whatever. Just use CSS. Because you already uploaded "massive" images your content has the added bonus of being future-proof and zoomable and usable in a "fullscreen gallery" or "lightbox" or whatever.</p>
+
+<p><strong>Finally your images are just content like they should be and you
+don't have to worry about what size you're going to use in your
+design.</strong></p>
+
+<hr>
+
+<p>Proposed by <a href="http://twitter.com/__leroux">__leroux</a>.</p>
+
+</body>
+</html>
+
